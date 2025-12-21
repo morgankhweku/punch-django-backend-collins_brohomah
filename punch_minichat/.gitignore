@@ -1,0 +1,5 @@
+.env
+db.sqlite3
+
+# any folder named __pycache__
+*/__pycache__/
