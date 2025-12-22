@@ -23,4 +23,6 @@ urlpatterns = [
      path("api/chat/", include("chat.urls")),
      path("api/groupchat/", include("groupchat.urls")),
 
+    path("api/forget-password/", include("forget_password.urls")),
+
 ]
