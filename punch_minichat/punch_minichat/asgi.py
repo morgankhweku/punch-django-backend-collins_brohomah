@@ -9,22 +9,31 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 
 import os
 import django
+from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
 
-# Set the Django settings module BEFORE importing anything else
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "punch_minichat.settings")
 django.setup()
 
-from django.core.asgi import get_asgi_application
-from channels.routing import ProtocolTypeRouter, URLRouter
-from chat.routing import websocket_urlpatterns
-from chat.jwt import JWTAuthMiddleware
+
+from chat.routing import websocket_urlpatterns as chat_ws
+from groupchat.routing import websocket_urlpatterns as group_ws
+
+
+from groupchat.middleware.jwt_auth_middleware import JWTAuthMiddleware
+
+
+django_asgi_app = get_asgi_application()
+
+
+all_ws_patterns = chat_ws + group_ws
+
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "http": django_asgi_app,
     "websocket": JWTAuthMiddleware(
-        URLRouter(websocket_urlpatterns)
+        URLRouter(all_ws_patterns)
     ),
 })
-
-
 
