@@ -1,7 +1,7 @@
 """
 Django settings for punch_minichat project.
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -11,19 +11,24 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --------------------------------------------------
-# SECURITY (LOCAL)
+# SECURITY
 # --------------------------------------------------
-SECRET_KEY = "django-insecure-*k=8#5hlo$$z2n*yi9msg+o2qfl*fq*^kvc(pvkq&*&vhjyp5l"
+# SECRET_KEY should always come from environment variable in production
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY" 
+)
 
-DEBUG = True
+# DEBUG mode should come from environment variable
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS should be set in environment variable, comma-separated
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 # --------------------------------------------------
 # APPLICATIONS
 # --------------------------------------------------
 INSTALLED_APPS = [
-    # Django
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -31,7 +36,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Third-party
+    # Third-party apps
     "rest_framework",
     "channels",
     "whitenoise.runserver_nostatic",
@@ -45,7 +50,7 @@ INSTALLED_APPS = [
 ]
 
 # --------------------------------------------------
-# MIDDLEWARE (WITH WHITENOISE)
+# MIDDLEWARE
 # --------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -62,7 +67,6 @@ MIDDLEWARE = [
 # URL / WSGI / ASGI
 # --------------------------------------------------
 ROOT_URLCONF = "punch_minichat.urls"
-
 WSGI_APPLICATION = "punch_minichat.wsgi.application"
 ASGI_APPLICATION = "punch_minichat.asgi.application"
 
@@ -72,9 +76,7 @@ ASGI_APPLICATION = "punch_minichat.asgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            BASE_DIR / "frontend" / "templates",
-        ],
+        "DIRS": [BASE_DIR / "frontend" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -119,19 +121,15 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------------
-# STATIC FILES (LOCAL)
+# STATIC FILES
 # --------------------------------------------------
 STATIC_URL = "/static/"
-
-STATICFILES_DIRS = [
-    BASE_DIR / "frontend" / "static",
-]
-
-
+STATICFILES_DIRS = [BASE_DIR / "frontend" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # --------------------------------------------------
-# CHANNELS (LOCAL, NO REDIS)
+# CHANNELS
 # --------------------------------------------------
 CHANNEL_LAYERS = {
     "default": {
@@ -140,7 +138,7 @@ CHANNEL_LAYERS = {
 }
 
 # --------------------------------------------------
-# DRF / JWT
+# REST FRAMEWORK / JWT
 # --------------------------------------------------
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -155,7 +153,7 @@ SIMPLE_JWT = {
 }
 
 # --------------------------------------------------
-# EMAIL (LOCAL)
+# EMAIL
 # --------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "noreply@punchchat.com"
