@@ -27,13 +27,13 @@ This project was built as an **engineering interview test** with emphasis on:
 - Messages stored in database
 - Message metadata (sender, timestamp)
 
-### 👥 Group Chat
+###  Group Chat
 - Create group chat
 - Add multiple users
 - Realtime group messaging
 - Group message persistence
 
-### 🖥 Frontend
+###  Frontend
 - Minimal HTML/CSS/JS
 - Login, signup, forgot password flow
 - Dashboard
@@ -42,7 +42,7 @@ This project was built as an **engineering interview test** with emphasis on:
 
 ---
 
-## 🧱 Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |------|-----------|
