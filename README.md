@@ -1,39 +1,77 @@
-#Engineering PYTHON Test
+# Punch MiniChat – Realtime Chat Application
+
+Punch MiniChat is a real-time chat application built with **Django**, **Django Rest Framework**, **JWT authentication**, and **Django Channels (WebSockets)**.  
+It supports **one-to-one chat**, **group chat**, **password reset via email**, and a **minimal frontend** for testing functionality.
+
+This project was built as an **engineering interview test** with emphasis on:
+- Clean architecture
+- Authentication
+- Realtime communication
+- Readable and maintainable code
+
+---
+
+##  Features
+
+###  Authentication
+- User registration
+- Login with **email + username + password**
+- JWT authentication (Access & Refresh tokens)
+- Check session
+- Logout
+- Forgot password (email verification code + reset)
+
+###  Chat
+- One-to-one chat
+- Realtime messaging using WebSockets
+- Messages stored in database
+- Message metadata (sender, timestamp)
+
+### 👥 Group Chat
+- Create group chat
+- Add multiple users
+- Realtime group messaging
+- Group message persistence
+
+### 🖥 Frontend
+- Minimal HTML/CSS/JS
+- Login, signup, forgot password flow
+- Dashboard
+- Chat list & chat room
+- Group chat list & group room
+
+---
+
+## 🧱 Tech Stack
+
+| Layer | Technology |
+|------|-----------|
+| Backend | Django 5.x |
+| API | Django Rest Framework |
+| Auth | SimpleJWT |
+| Realtime | Django Channels |
+| WebSocket Server | Daphne |
+| Frontend | HTML, CSS, Vanilla JS |
+| Database | SQLite (can be replaced later) |
+
+---
+
+## Project Structure
 
 
-You're supposed to build a Realtime Chat Server using Django Rest Framework, so It can be utilised on the front-end. Some specifications for the project are as follow:
-
-* There should be Authentication, which consists of Login, Sing-up, Register, Forgot Password, Check session, Refresh session and so on. You can build it custom or use any library for achieving the goal.
-* The options for chat can be multiple:
-    * One-to-one Chat
-    * Group Chat
-* The chat should be realtime.
-* The chat should be accessible at a later time/stored in db as well.  
-* The front-end should be minimal to test the app. There would be No points for the UI but for functionality.You can use any front-end technology or plain HTML/JS. Simple text boxes would work.
-
-Code requirements:
-* The code should be class based.
-* You are free to create as many apps, models, serialisers, and views required but More points would be given to the refined code.
-* The time and space complexity for each function/view/serialised should be minimal.
-* The admin panel should contain all the models. And the APIs should be interface-able via direct path in DEBUG mode. 
-* The code should be properly structured and readable. 
-
-Submission:
-You would be added to a Github repo for front-end and backend attached below:
-
-Backend: https://github.com/punchagency/punch-django-backend-test
-Frontend: https://github.com/punchagency/punch-frontend-test
-
-* You would be added to the Github repos mentioned above.
-* You can create a branch by your name.
-* You are supposed to push your daily updates to that branch.
-* Your daily/weekly progress would be based on the code available on Github.
-* The time available to complete the test would be one week.
-
-Grading:
-The candidate with the maximum BE functionality would receive the highest score, and the FE can be minimal. There is no score at all for the UI.
-
-
-NOTE: 
-THIS IS AN INDIVIDUAL TASK; COLLABORATIONS CAN LEAD TO DISQUALIFICATION.
-YOU SHOULD ALL LOG YOUR HOURS IN HUBSTAFF CORRECTLY, THATS TAKEN IN RESPECT WHILE CONCLUDING THE TEST RESULTS
+punch_minichat/
+│
+├── auth/                 # Authentication & JWT
+├── chat/                 # One-to-one chat
+├── groupchat/            # Group chat
+├── forgot_password/      # Password reset flow
+├── frontend/             # HTML/CSS/JS frontend
+│
+├── punch_minichat/
+│   ├── settings.py
+│   ├── urls.py
+│   └── asgi.py
+│
+├── manage.py
+├── README.md
+└── requirements.txt
