@@ -74,7 +74,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 "type": "chat_message",
                 "message": saved_message.content,
                 "user": user.email,
-                "timestamp": saved_message.created_at.isoformat(),
+                "timestamp": saved_message.timestamp.isoformat(),
             }
         )
 

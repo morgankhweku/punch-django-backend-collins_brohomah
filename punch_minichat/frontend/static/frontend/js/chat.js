@@ -42,7 +42,7 @@ async function loadMessages() {
 
 function connectWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws/chat/${chatId}/`;
+    const wsUrl = `${protocol}//${window.location.host}/ws/chat/${chatId}/?token=${chatToken}`;
     chatSocket = new WebSocket(wsUrl);
 
     chatSocket.onopen = function(e) {

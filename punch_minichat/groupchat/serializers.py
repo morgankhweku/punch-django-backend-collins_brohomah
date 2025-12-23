@@ -27,7 +27,7 @@ class GroupChatSerializer(serializers.ModelSerializer):
 
 class GroupMessageSerializer(serializers.ModelSerializer):
     sender = serializers.ReadOnlyField(source='sender.email')
-    timestamp = serializers.DateTimeField(source='created_at', read_only=True)
+    timestamp = serializers.DateTimeField(source='timestamp', read_only=True)
 
     class Meta:
         model = GroupMessage

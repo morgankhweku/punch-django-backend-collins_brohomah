@@ -7,8 +7,7 @@
 </head>
 <body>
     <h1>Login</h1>
-    <form method="POST">
-        {% csrf_token %}
+    <form id="login-form">
         <input type="email" name="email" placeholder="Email" required><br>
         <input type="text" name="username" placeholder="Username" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
@@ -18,5 +17,14 @@
         <a href="{% url 'frontend-signup' %}">Sign Up</a> |
         <a href="{% url 'frontend-forgot-password' %}">Forgot Password</a>
     </p>
+
+    <script src="{% static 'frontend/js/auth.js' %}"></script>
+    <script>
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', e => {
+        e.preventDefault();
+        login(loginForm, "{% url 'frontend-dashboard' %}");
+    });
+    </script>
 </body>
 </html>

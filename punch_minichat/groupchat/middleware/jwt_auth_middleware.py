@@ -2,8 +2,7 @@ from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from urllib.parse import parse_qs
-import jwt
-from django.conf import settings
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 User = get_user_model()
 
@@ -12,20 +11,18 @@ class JWTAuthMiddleware(BaseMiddleware):
     Middleware for Django Channels to authenticate users using JWT in query string.
     """
     async def __call__(self, scope, receive, send):
-        # Parse query string
+        # Get token from query string or cookies
         query_string = parse_qs(scope["query_string"].decode())
-        token = query_string.get("token", [None])[0]
+        token = query_string.get("token", [None])[0] or scope.get("cookies", {}).get("access_token")
 
         scope["user"] = None
 
         if token:
             try:
-                # Decode token
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-                user_id = payload.get("user_id")
-                if user_id:
-                    # Fetch user from DB asynchronously
-                    scope["user"] = await database_sync_to_async(User.objects.get)(id=user_id)
+                # Use JWTAuthentication to validate the token
+                validated_token = JWTAuthentication().get_validated_token(token)
+                user = JWTAuthentication().get_user(validated_token)
+                scope["user"] = user
             except Exception as e:
                 print("JWT error:", e)
 

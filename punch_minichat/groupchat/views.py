@@ -74,16 +74,23 @@ class ListGroupMessagesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, group_id):
+        print(f"ListGroupMessagesView: user={request.user}, group_id={group_id}")
         try:
             group = GroupChat.objects.get(id=group_id)
         except GroupChat.DoesNotExist:
+            print(f"Group not found: {group_id}")
             return Response({"detail": "Group not found"}, status=404)
 
-        if not GroupMember.objects.filter(group=group, user=request.user).exists():
+        is_member = GroupMember.objects.filter(group=group, user=request.user).exists()
+        print(f"Is member: {is_member}")
+        if not is_member:
+            print(f"Not a member: user={request.user}, group={group}")
             return Response({"detail": "Not a member of this group"}, status=403)
 
         messages = GroupMessage.objects.filter(group=group).order_by('timestamp')
+        print(f"Messages count: {messages.count()}")
         serializer = GroupMessageSerializer(messages, many=True)
+        print(f"Serialized data: {serializer.data}")
         return Response(serializer.data)
 
 
@@ -94,6 +101,6 @@ class ListGroupsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        groups = GroupChat.objects.filter(groupmember__user=request.user).distinct()
+        groups = GroupChat.objects.filter(members__user=request.user).distinct()
         serializer = GroupChatSerializer(groups, many=True)
         return Response(serializer.data)

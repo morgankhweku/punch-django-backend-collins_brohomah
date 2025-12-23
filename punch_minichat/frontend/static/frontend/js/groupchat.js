@@ -26,25 +26,43 @@ function addMessageToList(sender, content, timestamp) {
 
 /* ---------- Load Messages ---------- */
 async function loadGroupMessages() {
-    const res = await fetch(`/api/groupchat/${groupId}/message`, {
-        headers: {
-            'Authorization': 'Bearer ' + groupToken
+    try {
+        const res = await fetch(`/api/groupchat/${groupId}/message`, {
+            headers: {
+                'Authorization': 'Bearer ' + groupToken
+            }
+        });
+
+        if (!res.ok) {
+            console.error('Failed to load messages:', res.status, res.statusText);
+            const list = document.getElementById('messages');
+            list.innerHTML = '<li>Failed to load messages. Please refresh.</li>';
+            return;
         }
-    });
 
-    const messages = await res.json();
-    const list = document.getElementById('messages');
-    list.innerHTML = '';
+        const messages = await res.json();
+        console.log('Loaded messages:', messages);
+        const list = document.getElementById('messages');
+        list.innerHTML = '';
 
-    messages.forEach(msg => {
-        addMessageToList(msg.sender, msg.content, msg.timestamp);
-    });
+        if (messages.length === 0) {
+            list.innerHTML = '<li>No messages yet</li>';
+        } else {
+            messages.forEach(msg => {
+                addMessageToList(msg.sender, msg.content, msg.timestamp);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading messages:', error);
+        const list = document.getElementById('messages');
+        list.innerHTML = '<li>Error loading messages. Please refresh.</li>';
+    }
 }
 
 /* ---------- WebSocket ---------- */
 function connectGroupSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws/groupchat/${groupId}/`;
+    const wsUrl = `${protocol}//${window.location.host}/ws/groupchat/${groupId}/?token=${groupToken}`;
 
     groupSocket = new WebSocket(wsUrl);
 
@@ -73,9 +91,12 @@ document.getElementById('message-form').addEventListener('submit', e => {
     const message = input.value.trim();
     if (!message) return;
 
+    // Optimistically add the message
+    addMessageToList('You', message, new Date().toISOString());
+    input.value = '';
+
     if (groupSocket && groupSocket.readyState === WebSocket.OPEN) {
         groupSocket.send(JSON.stringify({ message }));
-        input.value = '';
     }
 });
 

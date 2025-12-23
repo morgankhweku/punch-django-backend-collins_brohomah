@@ -9,16 +9,31 @@
     <h1>Your Groups</h1>
     <button onclick="location.href='{% url 'frontend-dashboard' %}'">Dashboard</button>
     <button onclick="createGroup()">Create Group</button>
-    <ul id="group-list">
-        {% for group in groups %}
-            <li onclick="window.location.href='/group/{{ group.id }}/'">{{ group.name }}</li>
-        {% empty %}
-            <li>No groups yet</li>
-        {% endfor %}
-    </ul>
+    <ul id="group-list"></ul>
 
     <script>
     const token = localStorage.getItem('access_token');
+
+    async function loadGroups() {
+        const res = await fetch('/api/groupchat/list', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const groups = await res.json();
+        const list = document.getElementById('group-list');
+        list.innerHTML = '';
+        if(groups.length === 0){
+            list.innerHTML = '<li>No groups yet</li>';
+        } else {
+            groups.forEach(group => {
+                const li = document.createElement('li');
+                li.textContent = group.name;
+                li.onclick = () => {
+                    window.location.href = `/group/${group.id}/`;
+                };
+                list.appendChild(li);
+            });
+        }
+    }
 
     async function createGroup() {
         const name = prompt('Enter group name:');
@@ -40,12 +55,14 @@
         });
         if(res.ok) {
             alert('Group created!');
-            location.reload();
+            loadGroups();
         } else {
             const err = await res.json();
             alert(err.detail || 'Failed to create group');
         }
     }
+
+    loadGroups();
     </script>
 </body>
 </html>

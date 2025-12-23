@@ -14,11 +14,7 @@
 
     <!-- Messages -->
     <ul id="messages">
-        {% for msg in messages %}
-            <li>{{ msg.sender }}: {{ msg.content }} ({{ msg.timestamp|timesince }} ago)</li>
-        {% empty %}
-            <li>No messages yet</li>
-        {% endfor %}
+        <li>Loading messages...</li>
     </ul>
 
     <!-- Message form -->
@@ -28,6 +24,6 @@
     </form>
 
     <!-- JS -->
-    <script src="{% static 'frontend/js/group_chat.js' %}"></script>
+    <script src="{% static 'frontend/js/groupchat.js' %}"></script>
 </body>
 </html>
