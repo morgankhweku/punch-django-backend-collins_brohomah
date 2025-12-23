@@ -1,4 +1,1 @@
-web: gunicorn punch_django_backend_test.wsgi --bind 0.0.0.0:$PORT
-
-
-
+web: daphne -b 0.0.0.0 -p $PORT punch_minichat.asgi:application
