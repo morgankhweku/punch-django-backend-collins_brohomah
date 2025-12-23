@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <button onclick="location.href='{% url 'frontend-chat-list' %}'">Chat</button>
+    <button onclick="location.href='{% url 'frontend-group-list' %}'">Group</button>
+    <button id="logout-btn">Logout</button>
+
+    <script>
+    document.getElementById('logout-btn').onclick = () => {
+        localStorage.removeItem('access_token');
+        window.location.href = "{% url 'frontend-login' %}";
+    }
+    </script>
+</body>
+</html>

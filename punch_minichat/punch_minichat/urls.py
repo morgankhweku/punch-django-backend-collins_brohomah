@@ -25,4 +25,7 @@ urlpatterns = [
 
     path("api/forget-password/", include("forget_password.urls")),
 
+    path("", include("frontend.urls")),
+
+
 ]

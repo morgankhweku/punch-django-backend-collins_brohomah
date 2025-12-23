@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chats</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+</head>
+<body>
+    <h1>Your Chats</h1>
+    <button onclick="location.href='{% url 'frontend-dashboard' %}'">Dashboard</button>
+    <button onclick="createChat()">Create Chat</button>
+    <ul id="chat-list"></ul>
+
+    <script>
+    const token = localStorage.getItem('access_token');
+
+    async function loadChats() {
+        const res = await fetch('/api/chat/list', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const chats = await res.json();
+        const list = document.getElementById('chat-list');
+        list.innerHTML = '';
+        if(chats.length === 0){
+            list.innerHTML = '<li>No chats yet</li>';
+        } else {
+        chats.forEach(chat => {
+                const li = document.createElement('li');
+                li.textContent = chat.display_name;
+                li.onclick = () => {
+                    window.location.href = `/chat/${chat.id}/`;
+                };
+                list.appendChild(li);
+            });
+        }
+    }
+
+    async function createChat() {
+        const username = prompt('Enter username to chat with:');
+        if(!username) return;
+        const res = await fetch('/api/chat/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ username })
+        });
+        if(res.ok) {
+            alert('Chat created!');
+            loadChats();
+        } else {
+            const err = await res.json();
+            alert(err.detail || 'Failed to create chat');
+        }
+    }
+
+    loadChats();
+    </script>
+</body>
+</html>

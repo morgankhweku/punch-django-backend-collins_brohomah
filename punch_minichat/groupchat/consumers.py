@@ -1,6 +1,8 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
+from .models import GroupChat, GroupMember, GroupMessage
+from django.utils.timesince import timesince
 
 class GroupChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -9,7 +11,6 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         Authenticates user and joins the group if valid.
         """
         user = self.scope.get("user", None)
-        print("Connecting user:", user)
 
         # Reject if no user or not authenticated
         if not user or not user.is_authenticated:
@@ -20,6 +21,12 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         self.group_id = self.scope['url_route']['kwargs']['group_id']
         self.group_name = f"group_{self.group_id}"
 
+        # Check if user is member
+        is_member = await self.is_group_member(user, self.group_id)
+        if not is_member:
+            await self.close()
+            return
+
         # Join the group
         await self.channel_layer.group_add(
             self.group_name,
@@ -27,7 +34,6 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
-        print(f"User {user.email} connected to group {self.group_name}")
 
     async def disconnect(self, close_code):
         """
@@ -39,12 +45,11 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
                 self.group_name,
                 self.channel_name
             )
-        print(f"User disconnected from group {getattr(self, 'group_name', 'unknown')}")
 
     async def receive(self, text_data):
         """
         Called when a message is received from WebSocket.
-        Broadcasts the message to all users in the group.
+        Saves the message and broadcasts it to all users in the group.
         """
         user = self.scope.get("user")
         if not user or not user.is_authenticated:
@@ -53,19 +58,23 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
 
         try:
             data = json.loads(text_data)
-            message = data.get("message", "").strip()
-            if not message:
+            message_text = data.get("message", "").strip()
+            if not message_text:
                 return
         except json.JSONDecodeError:
             return  # Ignore invalid JSON
+
+        # Save the message
+        saved_message = await self.save_message(user, self.group_id, message_text)
 
         # Broadcast message to group
         await self.channel_layer.group_send(
             self.group_name,
             {
                 "type": "chat_message",
-                "message": message,
+                "message": saved_message.content,
                 "user": user.email,
+                "timestamp": saved_message.created_at.isoformat(),
             }
         )
 
@@ -76,5 +85,19 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         """
         await self.send(text_data=json.dumps({
             "message": event["message"],
-            "user": event["user"]
+            "user": event["user"],
+            "timestamp": event["timestamp"]
         }))
+
+    @database_sync_to_async
+    def is_group_member(self, user, group_id):
+        return GroupMember.objects.filter(group_id=group_id, user=user).exists()
+
+    @database_sync_to_async
+    def save_message(self, user, group_id, content):
+        group = GroupChat.objects.get(id=group_id)
+        return GroupMessage.objects.create(
+            group=group,
+            sender=user,
+            content=content
+        )

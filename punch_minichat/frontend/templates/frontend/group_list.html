@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Groups</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+</head>
+<body>
+    <h1>Your Groups</h1>
+    <button onclick="location.href='{% url 'frontend-dashboard' %}'">Dashboard</button>
+    <button onclick="createGroup()">Create Group</button>
+    <ul id="group-list">
+        {% for group in groups %}
+            <li onclick="window.location.href='/group/{{ group.id }}/'">{{ group.name }}</li>
+        {% empty %}
+            <li>No groups yet</li>
+        {% endfor %}
+    </ul>
+
+    <script>
+    const token = localStorage.getItem('access_token');
+
+    async function createGroup() {
+        const name = prompt('Enter group name:');
+        if(!name) return;
+        const membersInput = prompt('Enter member usernames separated by commas:');
+        if(membersInput === null) return;
+        const member_usernames = membersInput.split(',').map(u => u.trim()).filter(u => u);
+        if(member_usernames.length === 0) {
+            alert('At least one member is required');
+            return;
+        }
+        const res = await fetch('/api/groupchat/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ name, member_usernames })
+        });
+        if(res.ok) {
+            alert('Group created!');
+            location.reload();
+        } else {
+            const err = await res.json();
+            alert(err.detail || 'Failed to create group');
+        }
+    }
+    </script>
+</body>
+</html>

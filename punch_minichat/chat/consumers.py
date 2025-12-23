@@ -54,9 +54,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {
                 "type": "chat_message",
-                "message": message.content,
-                "sender": user.email,
-                "created_at": message.created_at.isoformat(),
+                "message": message.text,
+                "sender": user.username,
+                "timestamp": message.created_at.isoformat(),
             }
         )
 

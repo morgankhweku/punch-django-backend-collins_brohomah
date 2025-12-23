@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ group.name }}</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+</head>
+<body>
+    <h1>{{ group.name }}</h1>
+
+    <!-- Navigation -->
+    <button onclick="location.href='{% url 'frontend-group-list' %}'">Back to Groups</button>
+    <button onclick="location.href='{% url 'frontend-dashboard' %}'">Dashboard</button>
+
+    <!-- Messages -->
+    <ul id="messages">
+        {% for msg in messages %}
+            <li>{{ msg.sender }}: {{ msg.content }} ({{ msg.timestamp|timesince }} ago)</li>
+        {% empty %}
+            <li>No messages yet</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Message form -->
+    <form id="message-form">
+        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+        <button type="submit">Send</button>
+    </form>
+
+    <!-- JS -->
+    <script src="{% static 'frontend/js/group_chat.js' %}"></script>
+</body>
+</html>
