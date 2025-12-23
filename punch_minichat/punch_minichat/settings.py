@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "channels",
+    "whitenoise.runserver_nostatic",
 
     # Local apps
     "accounts",
@@ -44,10 +45,11 @@ INSTALLED_APPS = [
 ]
 
 # --------------------------------------------------
-# MIDDLEWARE (NO WHITENOISE)
+# MIDDLEWARE (WITH WHITENOISE)
 # --------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -124,6 +126,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "frontend" / "static",
 ]
+
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 

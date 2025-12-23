@@ -1,7 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
+import logging
 
 from .serializers import RegisterSerializer
 from .services import authenticate_user
@@ -11,9 +13,13 @@ class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        try:
+            serializer = RegisterSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        except ValidationError as e:
+            logging.error(f"Registration validation error: {e.detail}")
+            raise
 
         return Response(
             {"message": "User registered successfully"},
