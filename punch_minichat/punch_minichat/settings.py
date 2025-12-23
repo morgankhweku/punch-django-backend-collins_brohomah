@@ -145,13 +145,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 
-STATIC_URL = 'static/'
+# URL to access static files
+STATIC_URL = '/static/'
 
+# Where Django looks for additional static files (your app's frontend)
 STATICFILES_DIRS = [
-    BASE_DIR / "frontend/static",
+    BASE_DIR / "frontend" / "static",
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Where Django will collect all static files for deployment
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

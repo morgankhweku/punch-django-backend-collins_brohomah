@@ -1,3 +1,4 @@
-web: daphne -b 0.0.0.0 -p $PORT punch_django_backend_test.asgi:application
+web: gunicorn punch_django_backend_test.wsgi --bind 0.0.0.0:$PORT
+
 
 
