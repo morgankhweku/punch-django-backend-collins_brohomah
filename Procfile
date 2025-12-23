@@ -1,2 +1,2 @@
-web: gunicorn punch_django_backend_test.wsgi
+web: daphne punch_django_backend_test.asgi:application
 
