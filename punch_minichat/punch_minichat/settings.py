@@ -4,7 +4,6 @@ Django settings for punch_minichat project.
 
 from pathlib import Path
 from datetime import timedelta
-import os
 
 # --------------------------------------------------
 # BASE DIR
@@ -12,17 +11,13 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --------------------------------------------------
-# SECURITY
+# SECURITY (LOCAL)
 # --------------------------------------------------
 SECRET_KEY = "django-insecure-*k=8#5hlo$$z2n*yi9msg+o2qfl*fq*^kvc(pvkq&*&vhjyp5l"
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.railway.app",
-]
+ALLOWED_HOSTS = []
 
 # --------------------------------------------------
 # APPLICATIONS
@@ -49,14 +44,10 @@ INSTALLED_APPS = [
 ]
 
 # --------------------------------------------------
-# MIDDLEWARE
+# MIDDLEWARE (NO WHITENOISE)
 # --------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # ✅ WhiteNoise (VERY IMPORTANT for Railway)
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -95,7 +86,7 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# DATABASE
+# DATABASE (LOCAL SQLITE)
 # --------------------------------------------------
 DATABASES = {
     "default": {
@@ -108,7 +99,6 @@ DATABASES = {
 # AUTH
 # --------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"
-
 LOGIN_URL = "/"
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -127,37 +117,27 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------------
-# STATIC FILES  ✅ (THIS IS THE IMPORTANT PART)
+# STATIC FILES (LOCAL)
 # --------------------------------------------------
 STATIC_URL = "/static/"
 
-# ✅ Your frontend static directory
 STATICFILES_DIRS = [
     BASE_DIR / "frontend" / "static",
 ]
 
-# ✅ Where collectstatic puts files
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# ✅ WhiteNoise compression
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 # --------------------------------------------------
-# CHANNELS (WebSockets)
+# CHANNELS (LOCAL, NO REDIS)
 # --------------------------------------------------
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
-        # For Redis later:
-        # "BACKEND": "channels_redis.core.RedisChannelLayer",
-        # "CONFIG": {
-        #     "hosts": [os.environ.get("REDIS_URL")],
-        # },
     }
 }
 
 # --------------------------------------------------
-# DJANGO REST FRAMEWORK / JWT
+# DRF / JWT
 # --------------------------------------------------
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -172,11 +152,10 @@ SIMPLE_JWT = {
 }
 
 # --------------------------------------------------
-# EMAIL
+# EMAIL (LOCAL)
 # --------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "noreply@punchchat.com"
-EMAIL_HOST = "localhost"
 
 # --------------------------------------------------
 # DEFAULT PK
