@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         groupSocket.onmessage = e => {
             const data = JSON.parse(e.data);
-            addMessageToList(data.user, data.message, data.timestamp);
+            addMessageToList(data.sender, data.message, data.timestamp);
         };
 
         groupSocket.onclose = () => console.log('Group WebSocket closed');
