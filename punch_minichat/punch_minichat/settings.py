@@ -28,11 +28,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # ALLOWED_HOSTS should be set in environment variable, comma-separated
-ALLOWED_HOSTS = [
-    "web-production-ead30.up.railway.app",
-    "localhost",
-    "127.0.0.1",
-]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # --------------------------------------------------
