@@ -1,2 +1,2 @@
-web: gunicorn punch_minichat.wsgi:application --log-file -
+web: daphne punch_minichat.asgi:application --port $PORT --bind 0.0.0.0
 
