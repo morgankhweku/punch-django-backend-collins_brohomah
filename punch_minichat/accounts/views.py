@@ -15,13 +15,19 @@ class RegisterView(APIView):
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
         try:
+            serializer.is_valid(raise_exception=True)
             serializer.save()
         except IntegrityError:
             return Response(
                 {"error": "User with this email or username already exists"},
                 status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            logging.error(f"Registration error: {e}")
+            return Response(
+                {"error": "Registration failed"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         return Response(
