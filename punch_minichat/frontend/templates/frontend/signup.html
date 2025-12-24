@@ -17,19 +17,14 @@
 
     <script src="{% static 'frontend/js/auth.js' %}"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Signup page script loaded');
+    document.addEventListener('DOMContentLoaded', () => {
         const signupForm = document.getElementById('signup-form');
-        if (signupForm) {
-            console.log('Signup form found');
-            signupForm.addEventListener('submit', e => {
-                e.preventDefault();
-                console.log('Signup form submitted');
-                signup(signupForm, "{% url 'frontend-login' %}");
-            });
-        } else {
-            console.log('Signup form not found');
-        }
+        if (!signupForm) return console.error('Signup form not found');
+
+        signupForm.addEventListener('submit', e => {
+            e.preventDefault();
+            signup(signupForm, "{% url 'frontend-login' %}");
+        });
     });
     </script>
 </body>

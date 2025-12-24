@@ -8,61 +8,84 @@
 <body>
     <h1>Your Groups</h1>
     <button onclick="location.href='{% url 'frontend-dashboard' %}'">Dashboard</button>
-    <button onclick="createGroup()">Create Group</button>
-    <ul id="group-list"></ul>
+    <button id="create-group-btn">Create Group</button>
+    <ul id="group-list">
+        <li>Loading groups...</li>
+    </ul>
 
     <script>
-    const token = localStorage.getItem('access_token');
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('access_token');
+        const listEl = document.getElementById('group-list');
+        const createBtn = document.getElementById('create-group-btn');
 
-    async function loadGroups() {
-        const res = await fetch('/api/groupchat/list', {
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-        const groups = await res.json();
-        const list = document.getElementById('group-list');
-        list.innerHTML = '';
-        if(groups.length === 0){
-            list.innerHTML = '<li>No groups yet</li>';
-        } else {
-            groups.forEach(group => {
-                const li = document.createElement('li');
-                li.textContent = group.name;
-                li.onclick = () => {
-                    window.location.href = `/group/${group.id}/`;
-                };
-                list.appendChild(li);
-            });
+        async function loadGroups() {
+            try {
+                const res = await fetch(`${window.location.origin}/api/groupchat/list`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const groups = await res.json();
+                listEl.innerHTML = '';
+                if(groups.length === 0){
+                    listEl.innerHTML = '<li>No groups yet</li>';
+                } else {
+                    groups.forEach(group => {
+                        const li = document.createElement('li');
+                        li.textContent = group.name;
+                        li.style.cursor = 'pointer';
+                        li.onclick = () => {
+                            window.location.href = `${window.location.origin}/group/${group.id}/`;
+                        };
+                        listEl.appendChild(li);
+                    });
+                }
+            } catch(err) {
+                console.error(err);
+                listEl.innerHTML = '<li>Error loading groups</li>';
+            }
         }
-    }
 
-    async function createGroup() {
-        const name = prompt('Enter group name:');
-        if(!name) return;
-        const membersInput = prompt('Enter member usernames separated by commas:');
-        if(membersInput === null) return;
-        const member_usernames = membersInput.split(',').map(u => u.trim()).filter(u => u);
-        if(member_usernames.length === 0) {
-            alert('At least one member is required');
-            return;
-        }
-        const res = await fetch('/api/groupchat/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({ name, member_usernames })
-        });
-        if(res.ok) {
-            alert('Group created!');
-            loadGroups();
-        } else {
-            const err = await res.json();
-            alert(err.detail || 'Failed to create group');
-        }
-    }
+        async function createGroup() {
+            const name = prompt('Enter group name:');
+            if(!name) return;
 
-    loadGroups();
+            const membersInput = prompt('Enter member usernames separated by commas:');
+            if(membersInput === null) return;
+
+            const member_usernames = membersInput.split(',')
+                                                .map(u => u.trim())
+                                                .filter(u => u);
+
+            if(member_usernames.length === 0) {
+                alert('At least one member is required');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${window.location.origin}/api/groupchat/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ name, member_usernames })
+                });
+                if(res.ok){
+                    alert('Group created!');
+                    loadGroups();
+                } else {
+                    const err = await res.json();
+                    alert(err.detail || 'Failed to create group');
+                }
+            } catch(err) {
+                console.error(err);
+                alert('Network error while creating group');
+            }
+        }
+
+        createBtn.addEventListener('click', createGroup);
+        loadGroups();
+    });
     </script>
 </body>
 </html>

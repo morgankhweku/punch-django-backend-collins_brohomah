@@ -1,24 +1,48 @@
-<h2>Verify Code</h2>
-<input id="code" placeholder="Verification Code">
-<button onclick="verify()">Verify</button>
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Code</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+</head>
+<body>
+    <h2>Verify Code</h2>
+    <input id="code" placeholder="Verification Code" required>
+    <button id="verify-btn">Verify</button>
 
-<script src="{% static 'frontend/forgot_password.js' %}"></script>
-<script>
-    function verify() {
-    fetch(`${API}/forgot-password/verify-code/`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            email: localStorage.getItem("reset_email"),
-            code: code.value
-        })
-    })
-    .then(res => {
-        if (res.ok) {
-            window.location.href = "/reset-password/";
-        } else {
-            alert("Invalid code");
-        }
+    <script src="{% static 'frontend/forgot_password.js' %}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const codeInput = document.getElementById('code');
+        const verifyBtn = document.getElementById('verify-btn');
+        const API = window.location.origin + '/api'; // Base API URL
+
+        verifyBtn.addEventListener('click', async () => {
+            const email = localStorage.getItem('reset_email');
+            const code = codeInput.value.trim();
+
+            if (!code) return alert('Enter the verification code');
+            if (!email) return alert('No email found. Please restart the forgot password process.');
+
+            try {
+                const res = await fetch(`${API}/forget-password/verify/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, code })
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    window.location.href = "/reset-password/";
+                } else {
+                    alert(result.detail || 'Invalid code');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error. Try again.');
+            }
+        });
     });
-}
-</script>
+    </script>
+</body>
+</html>

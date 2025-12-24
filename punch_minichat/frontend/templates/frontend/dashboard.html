@@ -11,11 +11,17 @@
     <button onclick="location.href='{% url 'frontend-group-list' %}'">Group</button>
     <button id="logout-btn">Logout</button>
 
+    <!-- Optional: move this to a separate JS file -->
     <script>
-    document.getElementById('logout-btn').onclick = () => {
-        localStorage.removeItem('access_token');
-        window.location.href = "{% url 'frontend-login' %}";
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('access_token');
+                window.location.href = "{% url 'frontend-login' %}";
+            });
+        }
+    });
     </script>
 </body>
 </html>
