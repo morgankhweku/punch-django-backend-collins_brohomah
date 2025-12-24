@@ -19,6 +19,9 @@ COPY punch_minichat/ .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
+# Run database migrations
+RUN python manage.py migrate --noinput
+
 # Expose port
 EXPOSE 8000
 
