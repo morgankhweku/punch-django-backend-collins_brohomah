@@ -1,4 +1,6 @@
+
 // Login
+console.log("AUTH JS LOADED");
 async function login(form, redirectUrl) {
     const formData = new FormData(form);
     const data = {
@@ -21,6 +23,7 @@ async function login(form, redirectUrl) {
 }
 
 // Signup
+console.log("AUTH JS LOADED");
 async function signup(form, redirectUrl) {
     const formData = new FormData(form);
     const data = {

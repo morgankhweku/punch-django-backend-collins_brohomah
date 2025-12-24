@@ -1,3 +1,4 @@
+console.log("AUTH JS LOADED");
 const chatToken = localStorage.getItem('access_token');
 const chatId = window.location.pathname.split('/')[2];
 let chatSocket = null;
