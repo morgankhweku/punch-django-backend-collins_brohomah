@@ -4,7 +4,11 @@ Django settings for punch_minichat project.
 import os
 from pathlib import Path
 from datetime import timedelta
-import dj_database_url
+
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
 
 # --------------------------------------------------
 # BASE DIR
@@ -93,13 +97,21 @@ TEMPLATES = [
 # --------------------------------------------------
 # DATABASE
 # --------------------------------------------------
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+if dj_database_url:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # --------------------------------------------------
 # AUTH
@@ -160,10 +172,21 @@ SIMPLE_JWT = {
 # --------------------------------------------------
 # EMAIL
 # --------------------------------------------------
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "noreply@punchchat.com"
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() == 'true'
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@punchchat.com')
+
 
 # --------------------------------------------------
 # DEFAULT PK
 # --------------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+
