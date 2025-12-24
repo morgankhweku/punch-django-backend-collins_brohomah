@@ -20,10 +20,19 @@
 
     <script src="{% static 'frontend/js/auth.js' %}"></script>
     <script>
-    const loginForm = document.getElementById('login-form');
-    loginForm.addEventListener('submit', e => {
-        e.preventDefault();
-        login(loginForm, "{% url 'frontend-dashboard' %}");
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Login page script loaded');
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            console.log('Login form found');
+            loginForm.addEventListener('submit', e => {
+                e.preventDefault();
+                console.log('Login form submitted');
+                login(loginForm, "{% url 'frontend-dashboard' %}");
+            });
+        } else {
+            console.log('Login form not found');
+        }
     });
     </script>
 </body>

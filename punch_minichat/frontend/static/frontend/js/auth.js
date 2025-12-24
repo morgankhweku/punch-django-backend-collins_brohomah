@@ -35,7 +35,7 @@ async function signup(form, redirectUrl) {
     });
     const result = await res.json();
     if(res.ok){
-        alert('Signup successful!');
+        alert('User account successful');
         window.location.href = redirectUrl;
     } else {
         alert(result.detail || 'Signup failed');
