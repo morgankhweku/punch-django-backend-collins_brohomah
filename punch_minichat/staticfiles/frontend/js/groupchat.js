@@ -1,3 +1,5 @@
+console.log("GROUPCHAT JS LOADED");
+
 const groupToken = localStorage.getItem('access_token');
 const groupId = window.location.pathname.split('/')[2];
 let groupSocket = null;

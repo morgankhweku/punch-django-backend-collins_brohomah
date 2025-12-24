@@ -8,3 +8,6 @@ __pycache__/
 _Brohomahan.db
 _Brohomah
 TODO.md
+
+# Ignore collected static files
+/staticfiles/
