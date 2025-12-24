@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             'Content-Type': 'application/json',
                             'Authorization': 'Bearer ' + groupToken
                         },
-                        body: JSON.stringify({ message })
+                        body: JSON.stringify({ content: message })
                     });
                     if (!res.ok) {
                         const err = await res.json();
