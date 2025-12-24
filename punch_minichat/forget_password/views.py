@@ -51,7 +51,7 @@ class RequestPasswordResetView(APIView):
         send_reset_email(user.email, code)
 
         return Response(
-            {"detail": "Verification code sent."},
+            {"detail": "Verification code sent.", "code": code},  # Include code for popup
             status=status.HTTP_200_OK
         )
 

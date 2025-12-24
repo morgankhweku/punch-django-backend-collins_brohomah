@@ -10,4 +10,6 @@ urlpatterns = [
     path('groups/', views.group_list_view, name='frontend-group-list'),
     path('group/<int:group_id>/', views.group_chat_view, name='frontend-group-chat'),
     path('forgot-password/', views.forgot_password_view, name='frontend-forgot-password'),
+    path('verify-code/', views.verify_code_view, name='frontend-verify-code'),
+    path('reset-password/', views.reset_password_view, name='frontend-reset-password'),
 ]
