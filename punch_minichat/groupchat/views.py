@@ -44,6 +44,7 @@ class CreateGroupView(APIView):
 # --------------------
 class SendGroupMessageView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser]
 
     def post(self, request, group_id):
         try:
