@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.db import IntegrityError
 import logging
 
 from .serializers import RegisterSerializer
@@ -13,13 +14,15 @@ class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         try:
-            serializer = RegisterSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
             serializer.save()
-        except ValidationError as e:
-            logging.error(f"Registration validation error: {e.detail}")
-            raise
+        except IntegrityError:
+            return Response(
+                {"error": "User with this email or username already exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         return Response(
             {"message": "User registered successfully"},
