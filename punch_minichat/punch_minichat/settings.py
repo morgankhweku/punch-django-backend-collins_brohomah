@@ -20,14 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --------------------------------------------------
 # SECRET_KEY should always come from environment variable in production
 SECRET_KEY = os.environ.get(
-    "SECRET_KEY" 
+    "SECRET_KEY",
+    "django-insecure-default-key-change-in-production-123456789"
 )
 
 # DEBUG mode should come from environment variable
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # ALLOWED_HOSTS should be set in environment variable, comma-separated
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if host.strip()]
 
 # --------------------------------------------------
 # APPLICATIONS
