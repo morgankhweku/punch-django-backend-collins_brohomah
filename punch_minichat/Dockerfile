@@ -22,5 +22,5 @@ RUN python manage.py collectstatic --noinput
 # Expose port
 EXPOSE 8000
 
-# Start server (you can also use gunicorn for production)
-CMD ["gunicorn", "punch_minichat.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Start server with Daphne for ASGI
+CMD ["daphne", "punch_minichat.asgi:application", "--port", "8000", "--bind", "0.0.0.0"]
