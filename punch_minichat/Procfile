@@ -1,1 +1,2 @@
-web: gunicorn punch_minichat.wsgi --log-file -
+web: gunicorn punch_minichat.wsgi:application --log-file -
+
