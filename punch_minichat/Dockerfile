@@ -9,12 +9,12 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Install dependencies
-COPY requirements.txt .
+COPY punch_minichat/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Copy project files
-COPY . .
+COPY punch_minichat/ .
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
