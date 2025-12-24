@@ -73,7 +73,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
             {
                 "type": "chat_message",
                 "message": saved_message.content,
-                "user": user.email,
+                "sender": user.username,
                 "timestamp": saved_message.timestamp.isoformat(),
             }
         )
@@ -85,7 +85,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         """
         await self.send(text_data=json.dumps({
             "message": event["message"],
-            "user": event["user"],
+            "sender": event["sender"],
             "timestamp": event["timestamp"]
         }))
 

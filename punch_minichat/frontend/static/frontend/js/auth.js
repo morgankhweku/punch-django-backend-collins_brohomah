@@ -142,6 +142,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Attach event listeners
+    const requestBtn = document.getElementById('request-code-btn');
+    if (requestBtn) requestBtn.addEventListener('click', requestCode);
+
+    const verifyBtn = document.getElementById('verify-code-btn');
+    if (verifyBtn) verifyBtn.addEventListener('click', verifyCode);
+
+    const resetBtn = document.getElementById('reset-password-btn');
+    if (resetBtn) resetBtn.addEventListener('click', resetPassword);
+
     // Expose functions globally if needed in templates
     window.login = login;
     window.signup = signup;
